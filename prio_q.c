@@ -19,17 +19,17 @@ struct prio_q * prio_q_create()
 {
 	struct prio_q *q = malloc(sizeof *q);
 	q->front = NULL;
+	q->size = 0;
 	return q;
 }
 
 void prio_q_enqueue(struct prio_q *q, void *data, int prio)
 {
-	struct prio_q_elem *new_ele = malloc(sizeof *q);
+	struct prio_q_elem *new_ele = malloc(sizeof *new_ele);
 	new_ele->priority = prio;
 	new_ele->next = NULL;
-	new_ele->data = malloc(sizeof(data));
 	new_ele->data = data;
-
+	
 	if(q->front == NULL){
 		q->front = new_ele;
 		q->size = 1; 
@@ -72,11 +72,10 @@ void * prio_q_dequeue(struct prio_q *q)
 		else 
 			q->front = NULL;
 		if(ele->data != NULL)
-		{
-			data = malloc(sizeof ele->data);
-			data = ele->data;
+		{	
+			data = ele->data;		
 		}
-		q->size -= 1;
+		q->size -= 1;	
 		free(ele);
 	}	
 	return data;
@@ -102,10 +101,8 @@ int prio_q_destroy(struct prio_q *q, void ** data)
 			tmp = current_ele;
 			if(current_ele->data != NULL)
 			{
-				void *ele_data = malloc(sizeof current_ele->data);
-				ele_data = current_ele->data;
+				void *ele_data = current_ele->data;
 				data[k++] = ele_data;
-				free(current_ele->data);
 			}
 			current_ele = current_ele->next;
 			free(tmp);
@@ -113,8 +110,7 @@ int prio_q_destroy(struct prio_q *q, void ** data)
 
 		if(current_ele->data != NULL)
 		{
-			void *ele_data = malloc(sizeof current_ele->data);
-			ele_data = current_ele->data;
+			void *ele_data = current_ele->data;
 			data[k++] = ele_data;
 		}
 		free(current_ele);
@@ -125,16 +121,22 @@ int prio_q_destroy(struct prio_q *q, void ** data)
 
 void prio_q_print(struct prio_q * q, void (*print_data)(void*))
 {
-	struct prio_q_elem *e = q->front;
-	if(e == NULL) return;
-	while(e->next != NULL)
+	printf("Priority Queue: \n");
+	if(q != NULL && q->front != NULL)
 	{
+		struct prio_q_elem *e = q->front;
+		while(e->next != NULL)
+		{
+			printf("Prio: %d, Data: ", e->priority);
+			if(e->data != NULL)
+				print_data(e->data);
+			e = e->next;
+			printf("\n");
+		}
 		printf("Prio: %d, Data: ", e->priority);
-		print_data(e->data);
-		e = e->next;
+		if(e->data != NULL)
+			print_data(e->data);
 		printf("\n");
 	}
-	printf("Prio: %d, Data: ", e->priority);
-	print_data(e->data);
-	printf("\n");
+	printf("\n");	
 }
