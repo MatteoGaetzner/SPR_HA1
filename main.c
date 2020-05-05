@@ -72,13 +72,14 @@ int main()
 	struct prio_q * q = prio_q_create();
 
 	printf("-> enqueuing: 13(prio=0), 'a'(prio=5), 8(prio=2), \"sysprog\"(prio=1)\n");
+	
 	prio_q_enqueue(q, create_int(13), 0);
 	prio_q_enqueue(q, create_char('a'), 5);
 	prio_q_enqueue(q, create_int(8), 2);
 	prio_q_enqueue(q, create_string("sysprog"), 1);
 
 	prio_q_print(q, &print_data_void);
-
+/*
 	for(int i = 0; i < 5; i++){
 		printf("-> dequeuing: ");
 		struct arb_data * d = prio_q_dequeue(q);
@@ -106,6 +107,6 @@ int main()
 	{
 		free_data(data_array[i]);
 	}
-
+	*/
 	return 0;
 }
