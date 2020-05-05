@@ -121,7 +121,7 @@ int prio_q_destroy(struct prio_q *q, void ** data)
 
 void prio_q_print(struct prio_q * q, void (*print_data)(void*))
 {
-	printf("Priority Queue: \n");
+	printf("Priority Queue (size=%d): \n", q->size);
 	if(q != NULL && q->front != NULL)
 	{
 		struct prio_q_elem *e = q->front;
