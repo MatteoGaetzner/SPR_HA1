@@ -39,23 +39,19 @@ void prio_q_enqueue(struct prio_q *q, void *data, int prio)
 
 		while(current_ele->next != NULL){		
 			if(current_ele->priority < new_ele->priority && last_ele == NULL){
-				printf("first if");
 				break;
 			} else if(current_ele->priority < new_ele->priority){
-				printf("last_ele->priority = %d", last_ele->priority); 
 				last_ele->next = new_ele;
 				break;
 			} else {
-				printf("in else, with current = %d\n, next = %d\n", current_ele->priority, current_ele->next->priority);
 				last_ele = current_ele;
 				current_ele = current_ele->next;				
 			}
 		}
 
 		if(current_ele->priority < new_ele->priority){
-			printf("q->front->priority = %d, current_ele->priority = %d, new_ele->priority = %d\n", 
-					q->front->priority, current_ele->priority, new_ele->priority);
 			new_ele->next = current_ele;
+			if(last_ele != NULL) last_ele->next = new_ele;
 			if(current_ele == q->front) q->front = new_ele;
 		} else {	// current_ele->priority >= new_ele->priority
 			current_ele->next = new_ele;
@@ -67,28 +63,78 @@ void prio_q_enqueue(struct prio_q *q, void *data, int prio)
 
 void * prio_q_dequeue(struct prio_q *q)
 {
-	// TODO
+	void *data = NULL;
+	struct prio_q_elem *ele = q->front;
+	if(ele != NULL)
+	{
+		if(ele->next != NULL)
+			q->front = ele->next;
+		else 
+			q->front = NULL;
+		if(ele->data != NULL)
+		{
+			data = malloc(sizeof ele->data);
+			data = ele->data;
+		}
+		q->size -= 1;
+		free(ele);
+	}	
+	return data;
 }
 
 void * prio_q_front(struct prio_q *q)
 {
-	// TODO
+	if(q->front == NULL) 
+		return NULL;
+	else
+		return q->front->data;
 }
 
 int prio_q_destroy(struct prio_q *q, void ** data)
 {
-	// TODO
+	struct prio_q_elem *current_ele = q->front;
+	int k = 0;
+	if(current_ele != NULL) 
+	{
+		struct prio_q_elem *tmp = NULL; 
+		while(current_ele->next != NULL)
+		{	
+			tmp = current_ele;
+			if(current_ele->data != NULL)
+			{
+				void *ele_data = malloc(sizeof current_ele->data);
+				ele_data = current_ele->data;
+				data[k++] = ele_data;
+				free(current_ele->data);
+			}
+			current_ele = current_ele->next;
+			free(tmp);
+		}
+
+		if(current_ele->data != NULL)
+		{
+			void *ele_data = malloc(sizeof current_ele->data);
+			ele_data = current_ele->data;
+			data[k++] = ele_data;
+		}
+		free(current_ele);
+		free(q);
+	}
+	return k;
 }
 
 void prio_q_print(struct prio_q * q, void (*print_data)(void*))
 {
 	struct prio_q_elem *e = q->front;
+	if(e == NULL) return;
 	while(e->next != NULL)
 	{
-		printf("x ");
+		printf("Prio: %d, Data: ", e->priority);
 		print_data(e->data);
 		e = e->next;
 		printf("\n");
 	}
-
+	printf("Prio: %d, Data: ", e->priority);
+	print_data(e->data);
+	printf("\n");
 }

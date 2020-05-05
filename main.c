@@ -79,7 +79,7 @@ int main()
 	prio_q_enqueue(q, create_string("sysprog"), 1);
 
 	prio_q_print(q, &print_data_void);
-/*
+
 	for(int i = 0; i < 5; i++){
 		printf("-> dequeuing: ");
 		struct arb_data * d = prio_q_dequeue(q);
@@ -93,6 +93,7 @@ int main()
 		printf("\n");
 		prio_q_print(q, &print_data_void);
 	}
+	
 	printf("-> enqueuing: 42(prio=1)\n");
 	prio_q_enqueue(q, create_int(42), 1);
 	prio_q_print(q, &print_data_void);
@@ -107,6 +108,6 @@ int main()
 	{
 		free_data(data_array[i]);
 	}
-	*/
+	
 	return 0;
 }
