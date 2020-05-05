@@ -12,7 +12,8 @@ void prio_q_enqueue(struct prio_q *q, void *data, int prio)
 {
 	if(q == NULL) return;
 
-	struct prio_q_elem *new_ele = malloc(sizeof *new_ele);
+	// create new element
+	struct prio_q_elem *new_ele = malloc(sizeof *new_ele);	
 	new_ele->priority = prio;
 	new_ele->next = NULL;
 	new_ele->data = data;
@@ -24,6 +25,7 @@ void prio_q_enqueue(struct prio_q *q, void *data, int prio)
 		struct prio_q_elem *current_ele = q->front;
 		struct prio_q_elem *last_ele = NULL;
 
+		// find right gap to insert element
 		while(current_ele->next != NULL){		
 			if(current_ele->priority < new_ele->priority && last_ele == NULL){
 				break;
@@ -36,11 +38,13 @@ void prio_q_enqueue(struct prio_q *q, void *data, int prio)
 			}
 		}
 
+		// insert element between in front of an element
 		if(current_ele->priority < new_ele->priority){
 			new_ele->next = current_ele;
 			if(last_ele != NULL) last_ele->next = new_ele;
 			if(current_ele == q->front) q->front = new_ele;
-		} else {	// current_ele->priority >= new_ele->priority
+		} else {
+			// insert element at the tail of queue
 			current_ele->next = new_ele;
 		}
 		
@@ -53,23 +57,33 @@ void * prio_q_dequeue(struct prio_q *q)
 	void *data = NULL;
 	if(q != NULL && q->front != NULL)
 	{
-		struct prio_q_elem *ele = q->front;	
+		struct prio_q_elem *ele = q->front;
+
+		// decide whether front of queue must be replaced
 		if(ele->next != NULL)
 			q->front = ele->next;
 		else 
 			q->front = NULL;
+
+
 		if(ele->data != NULL)
 		{	
+			// assign pointer to data variable
 			data = ele->data;		
 		}
+
+		// remove front element from queue
 		q->size -= 1;	
 		free(ele);
-	}	
+	}
+
 	return data;
 }
 
 void * prio_q_front(struct prio_q *q)
 {
+	/* if queue has a front element, 
+	return it's data pointer, else return NULL */
 	if(q != NULL && q->front != NULL) 
 		return q->front->data;
 	else
@@ -78,11 +92,14 @@ void * prio_q_front(struct prio_q *q)
 
 int prio_q_destroy(struct prio_q *q, void ** data)
 {
+	// k = number of elements with e->data != NULL
 	int k = 0;
 	if(q != NULL && q->front != NULL) 
 	{
 		struct prio_q_elem *current_ele = q->front;
-		struct prio_q_elem *tmp = NULL; 
+		struct prio_q_elem *tmp = NULL;
+
+		// loop over queue, save non-Null e->data in given data array
 		while(current_ele->next != NULL)
 		{	
 			tmp = current_ele;
@@ -92,15 +109,19 @@ int prio_q_destroy(struct prio_q *q, void ** data)
 				data[k++] = ele_data;
 			}
 			current_ele = current_ele->next;
+			// remove each element from queue
 			free(tmp);
 		}
 
+		// do the above for last element too
 		if(current_ele->data != NULL)
 		{
 			void *ele_data = current_ele->data;
 			data[k++] = ele_data;
 		}
 		free(current_ele);
+
+		// remove queue
 		free(q);
 	}
 	return k;
