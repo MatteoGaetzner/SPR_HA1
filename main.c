@@ -77,7 +77,7 @@ int main()
 	prio_q_enqueue(q, create_char('a'), 5);
 	prio_q_enqueue(q, create_int(8), 2);
 	prio_q_enqueue(q, create_string("sysprog"), 1);
-
+	
 	prio_q_print(q, &print_data_void);
 
 	for(int i = 0; i < 5; i++){

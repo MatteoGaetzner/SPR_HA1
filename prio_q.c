@@ -1,20 +1,5 @@
 #include "prio_q.h"
 
-/*
- / struct representing the priority queue
-struct prio_q {
-        int size;                   // number of elements in queue
-        struct prio_q_elem *front;  // first element in queue
-};
-
-// struct representing an element in the priority queue
-struct prio_q_elem {
-    void * data;                // user data
-    int priority;               // priority of the element
-    struct prio_q_elem * next;  // pointer to next element in the queue
-};
-  */
-
 struct prio_q * prio_q_create()
 {
 	struct prio_q *q = malloc(sizeof *q);
@@ -25,6 +10,8 @@ struct prio_q * prio_q_create()
 
 void prio_q_enqueue(struct prio_q *q, void *data, int prio)
 {
+	if(q == NULL) return;
+
 	struct prio_q_elem *new_ele = malloc(sizeof *new_ele);
 	new_ele->priority = prio;
 	new_ele->next = NULL;
@@ -64,9 +51,9 @@ void prio_q_enqueue(struct prio_q *q, void *data, int prio)
 void * prio_q_dequeue(struct prio_q *q)
 {
 	void *data = NULL;
-	struct prio_q_elem *ele = q->front;
-	if(ele != NULL)
+	if(q != NULL && q->front != NULL)
 	{
+		struct prio_q_elem *ele = q->front;	
 		if(ele->next != NULL)
 			q->front = ele->next;
 		else 
@@ -83,18 +70,18 @@ void * prio_q_dequeue(struct prio_q *q)
 
 void * prio_q_front(struct prio_q *q)
 {
-	if(q->front == NULL) 
-		return NULL;
-	else
+	if(q != NULL && q->front != NULL) 
 		return q->front->data;
+	else
+		return NULL;
 }
 
 int prio_q_destroy(struct prio_q *q, void ** data)
 {
-	struct prio_q_elem *current_ele = q->front;
 	int k = 0;
-	if(current_ele != NULL) 
+	if(q != NULL && q->front != NULL) 
 	{
+		struct prio_q_elem *current_ele = q->front;
 		struct prio_q_elem *tmp = NULL; 
 		while(current_ele->next != NULL)
 		{	
